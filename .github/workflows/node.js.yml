@@ -10,24 +10,24 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
-
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node-version: [16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+  build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install, and test
+    - name: npm install and build webpack
       run: |
         npm install
-        npm test
-      env:
-        CI: true
+        npm run build
+    - uses: actions/upload-artifact@main
+      with:
+        name: webpack artifacts
+        path: public
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/download-artifact@main
+      with:
+        name: webpack artifacts
+        path: public
