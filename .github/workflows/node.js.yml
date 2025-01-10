@@ -31,6 +31,10 @@ jobs:
       with:
         name: webpack artifacts
         path: public
+    
+  label:
+    runs-on: ubuntu-latest
+    steps:
     - name: Label when approved
       uses: pullreminders/label-when-approved-action@main
       env:
